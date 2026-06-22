@@ -15,6 +15,16 @@
 - SVG `<title>` 요소 없음 — `role="img" + aria-label` 조합은 현대 브라우저에서 충분하나 구형 스크린리더 폴백 미흡. Story 3.4 접근성 완성 시 `<title>장기판</title>` 추가 고려.
 - `positionToCoords` 범위 검증 없음 — `col: 0–8`, `row: 0–9` 범위 외 Position 전달 시 SVG 밖 좌표 반환. Story 1.4에서 `getValidMoves`가 유효 Position 보장 예정이므로 지금은 불필요.
 
+## Deferred from: code review of 1-4-기물-svg-렌더링-및-초기-배치 (2026-06-22)
+
+- MOVE_PIECE piece-not-found fallthrough — 기물 미발견 시 target 셀에 덮어쓰기. `gameReducer.ts:50-61`. state 불변성 가정이 깨질 경우 bug, 현재는 dispatch 전 검증으로 방어됨.
+- PiecesLayer SVG 포인터 이벤트 차단 — `pointer-events: none` 미설정으로 Board 클릭 이벤트 차단 가능. `PiecesLayer.module.css`. Story 1.5 클릭 인터랙션 추가 시 처리.
+- boardContainer 명시적 height 없음 — absolute child가 브라우저 SVG aspect-ratio 추론에 의존. `App.module.css`. Playwright 검증 완료, 모던 브라우저에서 안전.
+- key={pieceId} 중복 가능성 — 동일 PieceId 중복 보드 배치 시 React 키 충돌. `PiecesLayer.tsx:30`. 현재 아키텍처에서 불가, 규칙 구현 후 재검토.
+- NEXT_SCENE에서 board 미초기화 — 씬 전환 시 기물 이동 상태 유지됨. `gameReducer.ts:32`. Epic 2 씬 전환 스펙에서 처리.
+- VIEWBOX_W/H가 constants.ts에 없음 — PiecesLayer 내 인라인 파생. `PiecesLayer.tsx:9-10`. 공유 상수(BOARD, CELL_SIZE, BOARD_PADDING)에서 계산하므로 저위험.
+- config prop 미사용 (Piece.tsx) — Props에 선언만, 본체에서 미사용. `Piece.tsx:17-23`. Story 3.1 useGSAP 통합 시 config.animation 사용 예정, 의도적 설계.
+
 ## Deferred from: code review of 1-2-핵심-타입-및-상태-머신-구현 (2026-06-21)
 
 - `MOVE_PIECE` `to: Position` payload 무시 — `GameState`에 `board` 필드 없음. `gameReducer.ts:33`. Story 1.4에서 Board를 GameState에 추가할 때 구현 예정.

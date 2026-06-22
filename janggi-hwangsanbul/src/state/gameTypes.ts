@@ -1,4 +1,4 @@
-import type { PieceId, Position } from '../types'
+import type { PieceId, Position, Board } from '../types'
 
 export type Scene = 'opening' | 'cha' | 'ma' | 'po' | 'jol' | 'ending'
 export type ExperiencePhase = 'intro' | 'demo' | 'play' | 'dialogue'
@@ -8,6 +8,7 @@ export type GameState = {
   phase: ExperiencePhase | null
   selectedPiece: PieceId | null
   completedPieces: Set<PieceId>
+  board: Board  // (PieceId | null)[][] — 10행×9열, board[row][col]
 }
 
 export type Action =

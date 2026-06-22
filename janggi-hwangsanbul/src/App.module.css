@@ -1,0 +1,5 @@
+.boardContainer {
+  position: relative;
+  max-width: 560px; /* Board.module.css .board max-width와 동일 */
+  margin: 0 auto;
+}

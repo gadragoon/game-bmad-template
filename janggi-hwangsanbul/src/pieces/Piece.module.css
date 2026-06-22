@@ -1,0 +1,4 @@
+.piece {
+  will-change: transform;
+  cursor: default; /* Story 1.5에서 pointer로 변경 */
+}
