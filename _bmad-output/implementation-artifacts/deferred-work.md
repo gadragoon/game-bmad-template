@@ -25,6 +25,14 @@
 - VIEWBOX_W/H가 constants.ts에 없음 — PiecesLayer 내 인라인 파생. `PiecesLayer.tsx:9-10`. 공유 상수(BOARD, CELL_SIZE, BOARD_PADDING)에서 계산하므로 저위험.
 - config prop 미사용 (Piece.tsx) — Props에 선언만, 본체에서 미사용. `Piece.tsx:17-23`. Story 3.1 useGSAP 통합 시 config.animation 사용 예정, 의도적 설계.
 
+## Deferred from: code review of 1-5-기물-선택-이동-인터랙션-및-차-룰-구현 (2026-06-25)
+
+- board 배열 참조 불변성 계약 — `PiecesLayer.tsx` useMemo deps `[selectedPiece, board]`가 reducer의 불변 배열 생성에 의존. reducer가 in-place 변경 시 stale valid moves 반환. 현재 reducer 규율로 안전.
+- MOVE_PIECE 빈 칸 덮어쓰기 — reducer가 대상 칸 선점 여부 미확인. `getChaValidMoves`가 기물 칸 제외로 현재 불가. 다른 기물 룰(마, 포, 졸) 구현 시 해당 기물의 rule engine이 occupied 칸을 반환하지 않는지 확인 필요.
+- selectedPiece stale ref — 위 덮어쓰기 발생 시 삭제된 기물 ID를 selectedPiece가 참조, 힌트 미표시. 현재 불가. MOVE_PIECE 덮어쓰기 이슈 해결 시 자동 해소.
+- getChaValidMoves 궁성(palace) 대각선 미구현 — 궁성 내 차의 대각선 이동 룰 미처리. 현재 직선 4방향만 지원. 정식 장기 구현 시 palace 좌표 상수 + 대각선 방향 추가 필요.
+- Piece handleClick stopPropagation이 부모 키보드 핸들러 차단 — 현재 부모 키보드 핸들러 없으므로 무해. Escape to deselect 등 전역 키보드 단축키 추가 시 Piece에 포커스된 상태에서 차단됨. 해결 시 piece `onKeyDown`에서 특정 키(Escape 등)만 선별 처리.
+
 ## Deferred from: code review of 1-2-핵심-타입-및-상태-머신-구현 (2026-06-21)
 
 - `MOVE_PIECE` `to: Position` payload 무시 — `GameState`에 `board` 필드 없음. `gameReducer.ts:33`. Story 1.4에서 Board를 GameState에 추가할 때 구현 예정.

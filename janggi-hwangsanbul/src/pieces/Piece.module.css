@@ -1,4 +1,8 @@
 .piece {
   will-change: transform;
-  cursor: default; /* Story 1.5에서 pointer로 변경 */
+  cursor: pointer;
+}
+
+.selected {
+  filter: drop-shadow(0 0 6px rgba(139, 105, 20, 0.8));
 }

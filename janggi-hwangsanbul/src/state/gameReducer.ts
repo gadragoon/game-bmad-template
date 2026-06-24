@@ -1,6 +1,7 @@
 import type { GameState, Action, Scene } from './gameTypes'
 import type { Board, PieceId, Position } from '../types'
 import { INITIAL_POSITIONS, BOARD } from '../constants'
+import { getValidMoves } from '../pieces/rules/ruleEngine'
 
 export const SCENE_ORDER: readonly Scene[] = [
   'opening', 'cha', 'ma', 'po', 'jol', 'ending',
@@ -50,17 +51,23 @@ export function gameReducer(state: GameState, action: Action): GameState {
       if (!state.selectedPiece) return state
       if (action.to.row < 0 || action.to.row >= BOARD.rows ||
           action.to.col < 0 || action.to.col >= BOARD.cols) return state
-      const nextBoard = state.board.map(row => [...row]) as Board
-      // 현재 위치 찾아 비우기
+      // 현재 위치 탐색
+      let currentPos: Position | null = null
       outer: for (let r = 0; r < BOARD.rows; r++) {
         for (let c = 0; c < BOARD.cols; c++) {
-          if (nextBoard[r][c] === state.selectedPiece) {
-            nextBoard[r][c] = null
+          if (state.board[r][c] === state.selectedPiece) {
+            currentPos = { row: r, col: c }
             break outer
           }
         }
       }
-      // 새 위치에 배치 (기존 기물 포획 포함)
+      if (!currentPos) return state
+      // 룰 엔진 검증 — 불법 이동 무시
+      const valid = getValidMoves(state.selectedPiece, currentPos, state.board)
+      const isLegal = valid.some(p => p.row === action.to.row && p.col === action.to.col)
+      if (!isLegal) return state
+      const nextBoard = state.board.map(row => [...row]) as Board
+      nextBoard[currentPos.row][currentPos.col] = null
       nextBoard[action.to.row][action.to.col] = state.selectedPiece
       return { ...state, selectedPiece: null, board: nextBoard }
     }
