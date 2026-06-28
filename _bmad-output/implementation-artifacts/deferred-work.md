@@ -33,6 +33,13 @@
 - getChaValidMoves 궁성(palace) 대각선 미구현 — 궁성 내 차의 대각선 이동 룰 미처리. 현재 직선 4방향만 지원. 정식 장기 구현 시 palace 좌표 상수 + 대각선 방향 추가 필요.
 - Piece handleClick stopPropagation이 부모 키보드 핸들러 차단 — 현재 부모 키보드 핸들러 없으므로 무해. Escape to deselect 등 전역 키보드 단축키 추가 시 Piece에 포커스된 상태에서 차단됨. 해결 시 piece `onKeyDown`에서 특정 키(Escape 등)만 선별 처리.
 
+## Deferred from: code review of 1-6-마-이동-룰-구현 (2026-06-28)
+
+- OOB block 칸 처리: block이 보드 밖일 때 기하학적 불변식으로 올바르게 동작하나, MA_STEPS 오프셋 변경 시 target이 in-bounds로 슬며시 진입할 위험. `ma.ts:16-18`.
+- `board[br][bc]` undefined 접근: sparse/malformed board 시 TypeError 가능. `ma.ts:16,23`. cha.ts와 동일한 pre-existing 패턴, POC board 초기화로 현재 안전.
+- AC2 테스트: jol 초기 위치(col:4,row:5) 암묵적 가정 — initial board layout 변경 시 테스트 시나리오 불일치. `tests/story-1-6-ma-rule.spec.ts:25-37`.
+- AC1 테스트: 힌트 8개 하드코딩 — 초기 board state 명시적 설정 없음. POC scope에서 결정적 초기화로 안전. `tests/story-1-6-ma-rule.spec.ts:17-22`.
+
 ## Deferred from: code review of 1-2-핵심-타입-및-상태-머신-구현 (2026-06-21)
 
 - `MOVE_PIECE` `to: Position` payload 무시 — `GameState`에 `board` 필드 없음. `gameReducer.ts:33`. Story 1.4에서 Board를 GameState에 추가할 때 구현 예정.

@@ -1,15 +1,29 @@
 import { GameProvider } from './state/GameContext'
-import Board from './board/Board'
-import PiecesLayer from './board/PiecesLayer'
-import styles from './App.module.css'
+import { useGameState } from './state/GameContext'
+import Opening from './scenes/Opening'
+import ExperienceCha from './scenes/ExperienceCha'
+import ExperienceMa from './scenes/ExperienceMa'
+import ExperiencePo from './scenes/ExperiencePo'
+import ExperienceJol from './scenes/ExperienceJol'
+import Ending from './scenes/Ending'
+
+function SceneRouter() {
+  const { scene } = useGameState()
+  switch (scene) {
+    case 'opening': return <Opening />
+    case 'cha':     return <ExperienceCha />
+    case 'ma':      return <ExperienceMa />
+    case 'po':      return <ExperiencePo />
+    case 'jol':     return <ExperienceJol />
+    case 'ending':  return <Ending />
+    default:        return null
+  }
+}
 
 function App() {
   return (
     <GameProvider>
-      <div className={styles.boardContainer}>
-        <Board />
-        <PiecesLayer />
-      </div>
+      <SceneRouter />
     </GameProvider>
   )
 }

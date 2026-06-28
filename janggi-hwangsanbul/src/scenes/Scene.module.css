@@ -1,0 +1,14 @@
+.scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.boardContainer {
+  position: relative;
+  max-width: 560px; /* Board.module.css .board max-width와 동일 */
+  width: 100%;
+  margin: 0 auto;
+}
