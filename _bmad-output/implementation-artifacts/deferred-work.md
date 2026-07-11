@@ -1,5 +1,10 @@
 # Deferred Work
 
+## Deferred from: code review of 2-4-씬-3-마-체험-장면 (2026-07-11)
+
+- `getValidMoves('ma', currentPos, board)`가 빈 배열을 반환하면(마가 사방이 막혀 이동 불가) `ExperienceMa.tsx`의 데모가 조용히 스킵되고 `play` 단계로 넘어가지만, play 단계에서도 마가 실제로 이동 불가능하므로 AC3("최소 1회 완료")를 영원히 만족할 수 없는 소프트락 가능성. 마가 4개 기물 중 3개(차/포/졸)에 사방으로 둘러싸여야 하는 매우 좁은 경로. 단순 패치가 아닌 설계 결정(자동 스킵/에러 상태 등) 필요. [janggi-hwangsanbul/src/scenes/ExperienceMa.tsx:24-33]
+- `playStartPos.current`가 "미초기화"와 "정상적으로 null을 반환한 위치"를 구분하지 못하는 sentinel 값 모호성 — Story 2.3의 `ExperienceCha.tsx`에서 이미 동일 패턴으로 존재했고 `ExperienceMa.tsx`에 그대로 복사됨. Story 2.5/2.6도 같은 패턴을 재사용할 예정이므로 개별 스토리 패치보다 4개 씬(cha/ma/po/jol)을 한 번에 정리하는 별도 클린업 권장. [janggi-hwangsanbul/src/scenes/ExperienceMa.tsx:35-49, janggi-hwangsanbul/src/scenes/ExperienceCha.tsx 동일 패턴]
+
 ## Deferred from: code review of 2-3-씬-2-차-체험-장면 (2026-07-11)
 
 - `findPiecePosition('cha', board)`가 `null`을 반환하면(다른 기물이 정확히 차가 있는 칸으로 이동해 덮어쓰는 경우 — `MOVE_PIECE`의 기존 overwrite 동작, Story 1.2 debt) `ExperienceCha.tsx`의 play→dialogue 전환 감지 effect가 영구적으로 멈춰 씬이 진행 불가능해짐. 이번 스토리의 "PiecesLayer 미게이팅" 결정과 Story 1.2부터 존재하던 overwrite 동작이 결합되어야 트리거되는 좁은 경로. Story 3.4(인터랙션 정제) 또는 룰 엔진 캡처/overwrite 처리 스토리에서 재검토 권장. [janggi-hwangsanbul/src/scenes/ExperienceCha.tsx:36-44]
