@@ -1,5 +1,12 @@
 # Deferred Work
 
+## Deferred from: code review of 2-2-씬-1-오프닝-내러티브-장면 (2026-07-11)
+
+- `--color-hanji`/`--color-sumi` CSS 커스텀 프로퍼티가 `Board.module.css`의 `:root`에만 정의되어 있고 이번 스토리가 추가한 `Scene.module.css`(`.sceneBackground`, `.narrationText`)에는 폴백값이 없음 — 크로스 모듈 암묵적 의존성. Story 1.3 리뷰에서 이미 `:root` 전역 방출 패턴 자체는 추적 중(향후 `index.css`/`global.css` 이전 고려). 이번 스토리는 그 패턴에 두 번째 소비처를 추가한 것 — Story 3.4 수묵화 비주얼 완성 시 함께 정리 권장.
+- `.sceneBackground`의 `aspect-ratio: 16/9` + `max-width: 560px` 조합에 `min-height` 가드가 없음 — 극단적으로 좁은 뷰포트/부모 flex 컨텍스트에서 배경이 과도하게 축소될 이론적 위험. Story 3.4 비주얼 정제 시 재검토.
+- `SUMI_E_STYLE`(수묵화 스타일 프롬프트+시드) 재사용 계약이 코드 레벨(타입/테스트)로 강제되지 않고 `narration.ts` 상단 주석에만 명시됨. Story 2.7(Ending 씬 구현) 시 실제로 `SUMI_E_STYLE`을 import하여 사용하는지 확인 필요 — 다른 값으로 재정의되면 감지되지 않음.
+- Playwright `afterEach`의 전역 console-error 어서션(`expect(consoleErrors.length).toBe(0)`)이 스토리와 무관한 콘솔 에러(브라우저 확장, HMR 경고 등)에도 반응해 취약함. Story 2.1부터 이어진 기존 테스트 컨벤션이며 이번 스토리에서 새로 도입되지 않음 — 테스트 인프라 정리 시 전역 필터링/allowlist 고려.
+
 ## Deferred from: code review of 1-1-프로젝트-초기화-및-개발-환경-설정 (2026-06-21)
 
 - `audioManager.play()` 오류/정지 시 Promise 영원히 pending — Howler `'loaderror'`/`'playerror'` 이벤트 미처리. Story 3.2에서 실제 구현 시 해결 필요.
