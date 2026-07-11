@@ -21,10 +21,11 @@ test.describe('Story 2.3: 씬 2 — 차(車) 체험 장면', () => {
     const scene = page.locator('[data-scene="cha"][data-phase="intro"]')
     await expect(scene).toContainText('차')
     await expect(scene).toContainText('지휘')
+    await expect(scene).toContainText('황산벌')
     await expect(page.locator('[aria-label="기물 cha"]')).toBeVisible()
   })
 
-  test('AC2: demo 단계 — 스크립트된 이동 후 자동으로 play 전환', async ({ page }) => {
+  test('AC2: demo 단계 — 2단계 스크립트 이동(가로+세로) 후 자동으로 play 전환', async ({ page }) => {
     const chaPiece = page.locator('[aria-label="기물 cha"]')
     const beforeBox = await chaPiece.boundingBox()
 
@@ -32,13 +33,14 @@ test.describe('Story 2.3: 씬 2 — 차(車) 체험 장면', () => {
     await page.locator('[data-scene="cha"] button:has-text("계속하기")').click()
     await expect(page.locator('[data-scene="cha"][data-phase="demo"]')).toBeVisible()
 
-    // demo → play (자동, 스크립트 이동 완료 후)
+    // demo → play (자동, 2단계 스크립트 이동 완료 후)
     await expect(page.locator('[data-scene="cha"][data-phase="play"]')).toBeVisible({ timeout: 5000 })
 
     const afterBox = await chaPiece.boundingBox()
     expect(beforeBox).not.toBeNull()
     expect(afterBox).not.toBeNull()
-    // 데모 이동으로 차 기물의 화면상 위치가 변경됨
+    // 데모 이동(가로 이동 → 세로 이동)으로 차 기물의 화면상 위치가 가로/세로 모두 변경됨
+    expect(afterBox!.x).not.toBe(beforeBox!.x)
     expect(afterBox!.y).not.toBe(beforeBox!.y)
   })
 

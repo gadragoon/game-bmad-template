@@ -5,7 +5,7 @@ type Props = {
   onContinue: () => void
 }
 
-export default function Dialogue({ text, onContinue }: Props) {
+export default function DialogueBox({ text, onContinue }: Props) {
   return (
     <div data-dialogue>
       <p className={styles.narrationText}>{text}</p>

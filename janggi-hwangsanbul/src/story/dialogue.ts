@@ -4,10 +4,10 @@
 export const CHA_INTRO = {
   title: '차(車) — 지휘하는 의지',
   paragraphs: [
-    '계백은 진영의 맨 앞에 차를 세운다.',
+    '황산벌, 계백은 진영의 맨 앞에 차를 세운다.',
     '가로세로 거침없이 뻗는 그 길은, 흔들리지 않는 지휘의 의지를 닮았다.',
   ],
 } as const
 
 export const CHA_DIALOGUE =
-  '곧게 뻗은 저 길처럼, 우리는 물러서지 않는다.' as const
+  '차(車)가 곧게 나아가듯, 우리도 물러서지 않는다.' as const
