@@ -22,3 +22,14 @@ export const MA_INTRO = {
 
 export const MA_DIALOGUE =
   '마(馬)가 몸을 틀어 전장을 내달리니, 전갈은 반드시 닿아야 한다.' as const
+
+export const PO_INTRO = {
+  title: '포(砲) — 매복한 저격수',
+  paragraphs: [
+    '황산벌 능선 너머, 계백은 포를 매복시킨다.',
+    '반드시 하나를 넘어야만 나아갈 수 있고, 넘을 것이 없으면 포는 움직이지도 쏘지도 못한다 — 숨죽여 때를 기다리는 저격수의 규율이다.',
+  ],
+} as const
+
+export const PO_DIALOGUE =
+  '포(砲)가 하나를 넘어 명중하듯, 전장의 승부는 순간에 갈린다.' as const

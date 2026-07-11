@@ -4,8 +4,8 @@ import { test, expect, type Page } from '@playwright/test'
 // 계속하기 버튼: button:has-text("계속하기")
 // 체험 씬 phase: [data-scene="cha"][data-phase="intro"]
 
-// po/jol은 Story 2.1의 단순 스텁(단일 계속하기 버튼)이라 여전히 단일 클릭으로 다음 씬 전환됨
-const SIMPLE_SCENES_WITH_NEXT = ['po', 'jol'] as const
+// jol은 Story 2.1의 단순 스텁(단일 계속하기 버튼)이라 여전히 단일 클릭으로 다음 씬 전환됨
+const SIMPLE_SCENES_WITH_NEXT = ['jol'] as const
 
 // Story 2.3: cha 씬은 intro→demo→play→dialogue 4단계를 거쳐야 다음 씬(ma)으로 전환된다.
 async function completeChaExperience(page: Page) {
@@ -37,6 +37,21 @@ async function completeMaExperience(page: Page) {
   await page.locator('[data-scene="ma"] button:has-text("계속하기")').click()
 }
 
+// Story 2.5: po 씬도 intro→demo→play→dialogue 4단계를 거쳐야 다음 씬(jol)으로 전환된다.
+async function completePoExperience(page: Page) {
+  // intro → demo
+  await page.locator('[data-scene="po"] button:has-text("계속하기")').click()
+  // demo → play (자동, DEMO_DELAY_MS 경과 후)
+  await page.waitForSelector('[data-scene="po"][data-phase="play"]', { timeout: 5000 })
+  // play: 유효한 이동 1회 수행
+  await page.locator('[aria-label="기물 po"]').click()
+  await page.getByRole('button', { name: /로 이동/ }).first().click()
+  // play → dialogue (자동)
+  await page.waitForSelector('[data-scene="po"][data-phase="dialogue"]', { timeout: 5000 })
+  // dialogue → jol
+  await page.locator('[data-scene="po"] button:has-text("계속하기")').click()
+}
+
 test.describe('Story 2.1: 씬 전환 시스템', () => {
   let consoleErrors: string[]
   test.beforeEach(async ({ page }) => {
@@ -65,6 +80,9 @@ test.describe('Story 2.1: 씬 전환 시스템', () => {
     await completeMaExperience(page)
     await expect(page.locator('[data-scene="po"]')).toBeVisible()
 
+    await completePoExperience(page)
+    await expect(page.locator('[data-scene="jol"]')).toBeVisible()
+
     for (const scene of SIMPLE_SCENES_WITH_NEXT) {
       await expect(page.locator(`[data-scene="${scene}"]`)).toBeVisible()
       await page.locator(`[data-scene="${scene}"] button:has-text("계속하기")`).click()
@@ -85,6 +103,7 @@ test.describe('Story 2.1: 씬 전환 시스템', () => {
     await page.locator('[data-scene="opening"] button:has-text("계속하기")').click()
     await completeChaExperience(page)
     await completeMaExperience(page)
+    await completePoExperience(page)
     for (const scene of SIMPLE_SCENES_WITH_NEXT) {
       await page.locator(`[data-scene="${scene}"] button:has-text("계속하기")`).click()
     }

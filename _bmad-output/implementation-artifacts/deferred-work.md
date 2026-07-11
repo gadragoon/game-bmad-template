@@ -1,5 +1,9 @@
 # Deferred Work
 
+## Deferred from: code review of 2-5-씬-4-포-체험-장면 (2026-07-11)
+
+- 포의 "정확히 1개만 넘어야 함" 메커니즘 특성상, `INITIAL_POSITIONS`가 지정한 경유 기물(jol)이 앞선 씬(차/마의 play 단계, 또는 포 자신의 demo 대기 중)에 플레이어에 의해 옮겨지면 포가 어느 방향으로도 유효 이동이 없는 상태가 될 수 있음 — demo가 애니메이션 없이 조용히 스킵되거나, play 단계에서 힌트가 전혀 표시되지 않아 영구 소프트락 가능. Story 2.5 Dev Notes에서 미리 예상했던 위험이며 Edge Case Hunter가 실제 도달 가능함을 확인함. [janggi-hwangsanbul/src/scenes/ExperiencePo.tsx:23-53, janggi-hwangsanbul/src/constants.ts#INITIAL_POSITIONS]
+
 ## Deferred from: code review of 2-4-씬-3-마-체험-장면 (2026-07-11)
 
 - `getValidMoves('ma', currentPos, board)`가 빈 배열을 반환하면(마가 사방이 막혀 이동 불가) `ExperienceMa.tsx`의 데모가 조용히 스킵되고 `play` 단계로 넘어가지만, play 단계에서도 마가 실제로 이동 불가능하므로 AC3("최소 1회 완료")를 영원히 만족할 수 없는 소프트락 가능성. 마가 4개 기물 중 3개(차/포/졸)에 사방으로 둘러싸여야 하는 매우 좁은 경로. 단순 패치가 아닌 설계 결정(자동 스킵/에러 상태 등) 필요. [janggi-hwangsanbul/src/scenes/ExperienceMa.tsx:24-33]
