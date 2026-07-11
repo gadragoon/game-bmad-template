@@ -1,5 +1,9 @@
 # Deferred Work
 
+## Deferred from: code review of 2-3-씬-2-차-체험-장면 (2026-07-11)
+
+- `findPiecePosition('cha', board)`가 `null`을 반환하면(다른 기물이 정확히 차가 있는 칸으로 이동해 덮어쓰는 경우 — `MOVE_PIECE`의 기존 overwrite 동작, Story 1.2 debt) `ExperienceCha.tsx`의 play→dialogue 전환 감지 effect가 영구적으로 멈춰 씬이 진행 불가능해짐. 이번 스토리의 "PiecesLayer 미게이팅" 결정과 Story 1.2부터 존재하던 overwrite 동작이 결합되어야 트리거되는 좁은 경로. Story 3.4(인터랙션 정제) 또는 룰 엔진 캡처/overwrite 처리 스토리에서 재검토 권장. [janggi-hwangsanbul/src/scenes/ExperienceCha.tsx:36-44]
+
 ## Deferred from: code review of 2-2-씬-1-오프닝-내러티브-장면 (2026-07-11)
 
 - `--color-hanji`/`--color-sumi` CSS 커스텀 프로퍼티가 `Board.module.css`의 `:root`에만 정의되어 있고 이번 스토리가 추가한 `Scene.module.css`(`.sceneBackground`, `.narrationText`)에는 폴백값이 없음 — 크로스 모듈 암묵적 의존성. Story 1.3 리뷰에서 이미 `:root` 전역 방출 패턴 자체는 추적 중(향후 `index.css`/`global.css` 이전 고려). 이번 스토리는 그 패턴에 두 번째 소비처를 추가한 것 — Story 3.4 수묵화 비주얼 완성 시 함께 정리 권장.
